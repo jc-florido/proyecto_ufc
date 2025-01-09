@@ -2,40 +2,7 @@
 {% block titulo %}Webs {% endblock %}
 {% block contenido %}
     <h2>Lista de paginas</h2>
-    <ul>
-        <li><a href="{% url 'cursos_new'%}">Nuevo curso</a></li>
-        <li><a href="{% url 'cursos_lista'%}">Lista de cursos</a></li>
-        {% for curso in cursos %}
-            <li>
-                <a href="{% url 'cursos_editar' curso.pk %}">Editar curso</a>
-            </li>
-            <li>
-                <a href="{% url 'cursos_eliminar' curso.pk %}">Eliminar curso</a>
-            </li>
-        {% endfor %}
-        <li>////////////////////////////////////////////////////////////////////</li>
-        <li><a href="{% url 'estudiantes_new'%}">Nuevo estudiante</a></li>
-        <li><a href="{% url 'estudiantes_lista'%}">Lista de estudiantes</a></li>
-        {% for estudiante in estudiantes %}
-            <li>
-                <a href="{% url 'estudiantes_editar' estudiante.pk %}">Editar estudiante</a>
-            </li>
-            <li>
-                <a href="{% url 'estudiantes_eliminar' estudiante.pk %}">Eliminar estudiante</a>
-            </li>
-        {% endfor %}
-        <li>////////////////////////////////////////////////////////////////////</li>
-        <li><a href="{% url 'inscripciones_new'%}">Nueva inscripcion</a></li>
-        <li><a href="{% url 'inscripciones_lista'%}">Lista de Inscripciones</a></li>
-        {% for inscripcion in inscripciones %}
-            <li>
-                <a href="{% url 'inscripciones_eliminar' inscripcion.pk %}">Eliminar inscripcion</a>
-            </li>
-        {% endfor %}
-        
-
-
-    </ul>
+   
 
 
 

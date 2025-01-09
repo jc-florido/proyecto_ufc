@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404,render,redirect
-from .forms import CursoForm,EstudianteForm,InscripcionForm
-from .models import Curso,Estudiante,Inscripcion
+from .forms import PeleadoresForm
+from .models import Peleadores
 
 # Create your views here.
 def principal(request):
