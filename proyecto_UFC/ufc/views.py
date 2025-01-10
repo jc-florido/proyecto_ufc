@@ -4,4 +4,4 @@ from .models import Peleadores
 
 # Create your views here.
 def principal(request):
-    return render(request,'ufc/principal.html')
+    return render(request,'paginas/principal.html')
