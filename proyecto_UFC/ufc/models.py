@@ -5,17 +5,20 @@ from django.db import models
 from django import forms
 from datetime import date
 from django.core.exceptions import ValidationError
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
 
 # Create your models here.
-class Usuarios(models.Model):
-    nombre= models.CharField(max_length=100,unique=True)
-    contraseña=models.CharField(max_length=100)
-    correo=models.EmailField()
+class Usuarios_ufc(AbstractUser):
+    codigo=models.CharField(max_length=100,unique=True)
+    correo=models.EmailField(unique=True)
 
+
+    class Meta:
+        verbose_name = 'Usuario'
+        verbose_name_plural = 'Usuarios'
 
     def __str__(self):
-        return f"{self.nombre} - {self.contraseña} - {self.correo}"
+        return f"{self.username} - {self.codigo} - {self.email}"
     
 class Peleadores(models.Model):
     foto=models.ImageField(upload_to='fotos/')
@@ -24,7 +27,7 @@ class Peleadores(models.Model):
     edad=models.IntegerField()
     codigo= models.CharField(max_length=100,unique=True)
     fecha_inicio=models.DateField()
-    categoria=models.ManyToManyField('Categoria',related_name='Categoria')
+    categoria=models.ManyToManyField('Categoria',related_name='Peleadores')
     posicion=models.CharField(max_length=100)
     record=models.CharField(max_length=100)
 
@@ -46,9 +49,9 @@ class Pelea(models.Model):
     peleador2=models.ForeignKey(Peleadores,on_delete=models.CASCADE,related_name='Peleador_2')
     fecha=models.DateField()
     asaltos=models.IntegerField()
-    ganador=models.CharField(max_length=100)
-    perdedor=models.CharField(max_length=100)
-    categoria=models.CharField(max_length=100)
+    ganador=models.ForeignKey(Peleadores,on_delete=models.CASCADE,related_name='Ganador')
+    perdedor=models.ForeignKey(Peleadores,on_delete=models.CASCADE,related_name='Perdedor')
+    categoria=models.ForeignKey('Categoria',on_delete=models.CASCADE,related_name='Pelea',default='pendiente')
 
     def __str__(self):
         return f" {self.codigo} - {self.peleador1} - {self.peleador2} - {self.fecha} - {self.asaltos} - {self.ganador} - {self.perdedor} - {self.categoria}"
@@ -76,8 +79,8 @@ class Pelea(models.Model):
     def clean_asaltos(self):
         cleaned_data=super().clean()
         asaltos=cleaned_data.get("asaltos")
-        if asaltos < 1 and asaltos > 5:
-            raise forms.ValidationError("El asalto no puede ser menor a 1 ni mayor a 5")
+        if asaltos == 3 or asaltos == 5:
+            raise forms.ValidationError("El asalto debe ser de 3 o 5")
         
         return cleaned_data
 
@@ -92,10 +95,21 @@ class Pelea(models.Model):
     
 class Categoria(models.Model):
     nombre=models.CharField(max_length=100,unique=True)
-    peleadores=models.ForeignKey(Peleadores,on_delete=models.CASCADE,related_name='Peleadores')
+    peleadores=models.ManyToManyField(Peleadores,related_name='Categoria_peleadores',blank=True,default='pendiente')
 
     def __str__(self):
         return f"{self.nombre} - {self.peleadores}"
+
+    def clean_peleadores(self):
+        cleaned_data = super().clean()
+        peleadores = cleaned_data.get("peleadores")
+
+        # Verifica que no se agregue el mismo peleador a la categoría más de una vez
+        for peleador in peleadores.all():
+            if peleadores.filter(codigo=peleador.codigo).count() > 1:
+                raise forms.ValidationError("No se puede agregar el mismo peleador a la misma categoría")
+
+        return cleaned_data
     
 class Evento(models.Model):
     nombre=models.IntegerField(unique=True)
@@ -135,7 +149,7 @@ class Noticias(models.Model):
     
 class Apuesta(models.Model):
     codigo=models.CharField(max_length=100,unique=True)
-    usuario=models.ManyToManyField(Usuarios,related_name='Usuarios_apuestas')
+    usuario=models.ManyToManyField(Usuarios_ufc,related_name='Usuarios_apuestas')
     evento=models.ForeignKey(Evento,on_delete=models.CASCADE,related_name='Evento')
     pelea=models.ForeignKey(Pelea,on_delete=models.CASCADE,related_name='Pelea')
     cantidad=models.IntegerField()
@@ -159,7 +173,7 @@ class Apuesta(models.Model):
     def clean_asalto(self):
         cleaned_data=super().clean()
         asalto=cleaned_data.get("asalto")
-        if asalto < 1 and asalto > 5:
+        if asalto < 1 or asalto > 5:
             raise forms.ValidationError("El asalto no puede ser menor a 1 ni mayor a 5")
         
         return cleaned_data
@@ -178,7 +192,7 @@ class Apuesta(models.Model):
     
 class Comentario(models.Model):
     codigo=models.CharField(max_length=100,unique=True)
-    usuario=models.ManyToManyField(Usuarios,related_name='Usuarios_comentarios')
+    usuario=models.ManyToManyField(Usuarios_ufc,related_name='Usuarios_comentarios')
     noticia=models.ForeignKey(Noticias,on_delete=models.CASCADE,related_name='Noticias')
     contenido=models.CharField(max_length=1000)
     fecha=models.DateField()
