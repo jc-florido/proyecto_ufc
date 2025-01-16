@@ -1,7 +1,12 @@
 {% extends 'paginas/base.html' %}
-{% block titulo %}Webs {% endblock %}
+{% block titulo %}UFC ESPAÑA{% endblock %}
 {% block contenido %}
-    <h2>Lista de paginas</h2>
+    <h2>Eventos</h2>
+    {% for evento in eventos %}
+        <h3>{{ evento.nombre }}</h3>
+        <p>{{ evento.fecha }}</p>
+        <p>{{ evento.descripcion }}</p>
+    {% endfor %}
    
 
 

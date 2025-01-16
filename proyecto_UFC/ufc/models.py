@@ -4,6 +4,8 @@ from django.db import models
 from django.db import models
 from django import forms
 from datetime import date
+from django.core.exceptions import ValidationError
+from django.contrib.auth.models import User
 
 # Create your models here.
 class Usuarios(models.Model):
@@ -16,18 +18,19 @@ class Usuarios(models.Model):
         return f"{self.nombre} - {self.contraseña} - {self.correo}"
     
 class Peleadores(models.Model):
+    foto=models.ImageField(upload_to='fotos/')
     nombre= models.CharField(max_length=100)
     apellido=models.CharField(max_length=100)
     edad=models.IntegerField()
     codigo= models.CharField(max_length=100,unique=True)
     fecha_inicio=models.DateField()
-    categoria=models.CharField(max_length=100)
+    categoria=models.ManyToManyField('Categoria',related_name='Categoria')
     posicion=models.CharField(max_length=100)
     record=models.CharField(max_length=100)
 
 
     def __str__(self):
-        return f"{self.nombre} - {self.apellido} - {self.edad} - {self.codigo} - {self.fecha_inicio} - {self.categoria} - {self.posicion} - {self.record}"
+        return f"{self.foto} - {self.nombre} - {self.apellido} - {self.edad} - {self.codigo} - {self.fecha_inicio} - {self.categoria} - {self.posicion} - {self.record}"
     
     def clean_fecha_inicio(self):
         cleaned_data=super().clean()
@@ -39,8 +42,8 @@ class Peleadores(models.Model):
 
 class Pelea(models.Model):
     codigo=models.CharField(max_length=100,unique=True)
-    peleador1=models.ManyToManyField(Peleadores,related_name='Peleador_1')
-    peleador2=models.ManyToManyField(Peleadores,related_name='Peleador_2')
+    peleador1=models.ForeignKey(Peleadores,on_delete=models.CASCADE,related_name='Peleador_1')
+    peleador2=models.ForeignKey(Peleadores,on_delete=models.CASCADE,related_name='Peleador_2')
     fecha=models.DateField()
     asaltos=models.IntegerField()
     ganador=models.CharField(max_length=100)
@@ -48,7 +51,7 @@ class Pelea(models.Model):
     categoria=models.CharField(max_length=100)
 
     def __str__(self):
-        return f" {self.codigo} - {self.peleador1} - {self.peleador2} - {self.fecha} - {self.ganador} - {self.perdedor} - {self.categoria}"
+        return f" {self.codigo} - {self.peleador1} - {self.peleador2} - {self.fecha} - {self.asaltos} - {self.ganador} - {self.perdedor} - {self.categoria}"
     
     def clean_fecha(self):
         cleaned_data=super().clean()
@@ -89,7 +92,7 @@ class Pelea(models.Model):
     
 class Categoria(models.Model):
     nombre=models.CharField(max_length=100,unique=True)
-    peleadores=models.ManyToManyField(Peleadores,related_name='Peleadores_categoria')
+    peleadores=models.ForeignKey(Peleadores,on_delete=models.CASCADE,related_name='Peleadores')
 
     def __str__(self):
         return f"{self.nombre} - {self.peleadores}"
@@ -98,10 +101,11 @@ class Evento(models.Model):
     nombre=models.IntegerField(unique=True)
     fecha=models.DateField()
     lugar=models.CharField(max_length=100)
-    peleas=models.ManyToManyField(Pelea)
+    descripcion=models.CharField(max_length=1000)
+    peleas=models.ForeignKey(Pelea,on_delete=models.CASCADE,related_name='Peleas')
 
     def __str__(self):
-        return f"{self.nombre} - {self.fecha} - {self.lugar} - {self.peleas}"
+        return f"{self.nombre} - {self.fecha} - {self.lugar} - {self.descripcion} - {self.peleas}"
     
     def clean_fecha(self):
         cleaned_data=super().clean()
@@ -114,7 +118,7 @@ class Evento(models.Model):
 class Noticias(models.Model):
     codigo=models.CharField(max_length=100,unique=True)
     titulo=models.CharField(max_length=100)
-    contenido=models.CharField(max_length=100000)
+    contenido=models.TextField()
     fecha=models.DateField()
     autor=models.CharField(max_length=100)
 
