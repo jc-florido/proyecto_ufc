@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404,render,redirect
 from .forms import PeleadoresForm
-from .models import Peleadores, Pelea, Usuarios, Categoria,Evento,Noticias,Apuesta,Comentario
+from .models import Peleadores, Pelea, Usuarios_ufc, Categoria,Evento,Noticias,Apuesta,Comentario
 
 # Create your views here.
 def principal(request):
