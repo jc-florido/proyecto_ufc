@@ -110,8 +110,7 @@ class Noticias(models.Model):
     titulo=models.CharField(max_length=100)
     contenido=models.TextField()
     fecha=models.DateField()
-    autor=models.CharField(max_length=100)
-
+    autor=models.ForeignKey(Usuarios_ufc,on_delete=models.CASCADE,related_name='Autor_usuario')
     def __str__(self):
         return f"{self.codigo} - {self.titulo} - {self.contenido} - {self.fecha} - {self.autor}"
     

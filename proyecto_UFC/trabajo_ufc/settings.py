@@ -76,12 +76,25 @@ WSGI_APPLICATION = 'trabajo_ufc.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+   'default': {
+      'ENGINE': 'django.db.backends.sqlite3',
+       'NAME': BASE_DIR / 'db.sqlite3',
+   }
 }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'mysql.connector.django',  # Motor para mysql-connector-python
+#         'NAME': 'UFC',  # Nombre de la base de datos
+#         'USER': 'Florido',                # Usuario de la base de datos
+#         'PASSWORD': '2004+398al',         # Contraseña del usuario
+#         'HOST': '192.168.100.5',                 # Dirección del servidor
+#         'PORT': '3306',                      # Puerto de la base de datos
+#         'OPTIONS': {
+#             'autocommit': True,
+#         },
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
