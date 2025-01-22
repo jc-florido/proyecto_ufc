@@ -138,5 +138,9 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_REDIRECT_URL =  reverse_lazy('principal')
-LOGOUT_REDIRECT_URL =  reverse_lazy('principal')
+LOGOUT_REDIRECT_URL =  reverse_lazy('logout')
 AUTH_USER_MODEL = 'ufc.Usuarios_ufc'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+

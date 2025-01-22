@@ -42,8 +42,7 @@ class Peleadores(models.Model):
 
 class Pelea(models.Model):
     codigo=models.CharField(max_length=100,unique=True)
-    peleador1=models.ForeignKey(Peleadores,on_delete=models.CASCADE,related_name='Peleador_1')
-    peleador2=models.ForeignKey(Peleadores,on_delete=models.CASCADE,related_name='Peleador_2')
+    foto=models.ImageField(upload_to='fotos/')
     fecha=models.DateField()
     asaltos=models.IntegerField()
     ganador=models.ForeignKey(Peleadores,on_delete=models.CASCADE,related_name='Ganador')
@@ -51,7 +50,7 @@ class Pelea(models.Model):
     categoria=models.ForeignKey('Categoria',on_delete=models.CASCADE,related_name='Pelea',default='pendiente')
 
     def __str__(self):
-        return f" {self.codigo} - {self.peleador1} - {self.peleador2} - {self.fecha} - {self.asaltos} - {self.ganador} - {self.perdedor} - {self.categoria}"
+        return f" {self.codigo} - {self.foto} - {self.fecha} - {self.asaltos} - {self.ganador} - {self.perdedor} - {self.categoria}"
 
 
     def clean(self):
@@ -91,13 +90,14 @@ class Categoria(models.Model):
     
 class Evento(models.Model):
     nombre=models.IntegerField(unique=True)
+    foto=models.ImageField(upload_to='fotos/')
     fecha=models.DateField()
     lugar=models.CharField(max_length=100)
     descripcion=models.CharField(max_length=1000)
     peleas=models.ManyToManyField(Pelea,related_name='Evento_peleas',blank=True)
 
     def __str__(self):
-        return f"{self.nombre} - {self.fecha} - {self.lugar} - {self.descripcion} - {self.peleas}"
+        return f"{self.nombre} - {self.foto} - {self.fecha} - {self.lugar} - {self.descripcion} - {self.peleas}"
     
     def clean_fecha(self):
         if self.fecha < date.today():
@@ -107,12 +107,13 @@ class Evento(models.Model):
     
 class Noticias(models.Model):
     codigo=models.CharField(max_length=100,unique=True)
+    foto=models.ImageField(upload_to='fotos/')
     titulo=models.CharField(max_length=100)
     contenido=models.TextField()
     fecha=models.DateField()
     autor=models.ForeignKey(Usuarios_ufc,on_delete=models.CASCADE,related_name='Autor_usuario')
     def __str__(self):
-        return f"{self.codigo} - {self.titulo} - {self.contenido} - {self.fecha} - {self.autor}"
+        return f"{self.codigo} - {self.foto} - {self.titulo} - {self.contenido} - {self.fecha} - {self.autor}"
     
     def clean_fecha(self):
         if self.fecha < date.today():

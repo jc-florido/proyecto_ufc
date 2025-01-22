@@ -8,4 +8,7 @@ def principal(request):
     noticias=Noticias.objects.all()
     apuestas=Apuesta.objects.all()
     comentarios=Comentario.objects.all()
-    return render (request, 'ufc/principal.html', {'eventos':eventos,'noticias':noticias,'apuestas':apuestas,'comentarios':comentarios})
+    return render (request, 'paginas/principal.html', {'eventos':eventos,'noticias':noticias,'apuestas':apuestas,'comentarios':comentarios})
+
+def logout(request):
+    return render(request, 'paginas/logout.html')

@@ -9,7 +9,14 @@ class PeleadoresForm(forms.ModelForm):
         model = Peleadores
         fields = '__all__'
         widgets = {'fecha_inicio': forms.DateInput(format='%Y-%m-%d', attrs={'type': 'date'}),
-                   'fecha_fin': forms.DateInput(format='%Y-%m-%d', attrs={'type': 'date'}),}
+                   'fecha_fin': forms.DateInput(format='%Y-%m-%d', attrs={'type': 'date'}),
+                   'record': forms.TextInput(attrs={
+                            'class': 'form-control',
+                            'placeholder': 'Ejemplo: 18-0-0',
+                            'maxlength': '6',  # Limitar a 6 caracteres
+                            'pattern': r'\d{3}-\d{3}-\d{3}',  # Validación en HTML5
+                            'title': 'Debe ser del formato NN-N-N (ejemplo: 18-0-0).'}),
+                    }
 
 
 class ApuestaForm(forms.ModelForm):

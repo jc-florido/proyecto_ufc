@@ -1,5 +1,5 @@
 {% extends 'paginas/base.html' %}
-{% block titulo %}UFC ESPAÑA{% endblock %}
+{% block titulo %}UFC{% endblock %}
 {% block contenido %}
     <h2>Eventos</h2>
     {% for evento in eventos %}
@@ -8,7 +8,7 @@
         <p>{{ evento.descripcion }}</p>
     {% endfor %}
    
-
+    <a href="{% url 'ufc:logout' %}">Cerrar cesion</a>
 
 
 
