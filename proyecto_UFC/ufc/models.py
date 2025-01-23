@@ -20,10 +20,11 @@ class Usuarios_ufc(AbstractUser):
         return f"{self.username} - {self.codigo} - {self.email}"
     
 class Peleadores(models.Model):
-    foto=models.ImageField(upload_to='fotos/')
+    foto=models.ImageField(upload_to='fotos/',null=False)
     nombre= models.CharField(max_length=100)
     apellido=models.CharField(max_length=100)
     edad=models.IntegerField()
+    peso=models.IntegerField()
     codigo= models.CharField(max_length=100,unique=True)
     fecha_inicio=models.DateField()
     categoria=models.ManyToManyField('Categoria',related_name='Peleadores')
@@ -32,7 +33,7 @@ class Peleadores(models.Model):
 
 
     def __str__(self):
-        return f"{self.foto} - {self.nombre} - {self.apellido} - {self.edad} - {self.codigo} - {self.fecha_inicio} - {self.categoria} - {self.posicion} - {self.record}"
+        return f"{self.foto} - {self.nombre} - {self.apellido} - {self.edad} - {self.peso} - {self.codigo} - {self.fecha_inicio} - {self.categoria} - {self.posicion} - {self.record}"
     
     def clean_fecha_inicio(self):
         if self.fecha_inicio > date.today():
@@ -42,7 +43,7 @@ class Peleadores(models.Model):
 
 class Pelea(models.Model):
     codigo=models.CharField(max_length=100,unique=True)
-    foto=models.ImageField(upload_to='fotos/')
+    foto=models.ImageField(upload_to='fotos/',null=False)
     fecha=models.DateField()
     asaltos=models.IntegerField()
     ganador=models.ForeignKey(Peleadores,on_delete=models.CASCADE,related_name='Ganador')
@@ -57,10 +58,6 @@ class Pelea(models.Model):
         # Validación de fecha
         if self.fecha < date.today():
             raise ValidationError("La fecha no puede ser menor a la actual.")
-
-        # Validación de peleadores
-        if self.peleador1 == self.peleador2:
-            raise ValidationError("No se puede pelear contra uno mismo.")
 
         # Validación de ganador y perdedor
         if self.ganador == self.perdedor:
@@ -90,7 +87,7 @@ class Categoria(models.Model):
     
 class Evento(models.Model):
     nombre=models.IntegerField(unique=True)
-    foto=models.ImageField(upload_to='fotos/')
+    foto=models.ImageField(upload_to='fotos/',null=False)
     fecha=models.DateField()
     lugar=models.CharField(max_length=100)
     descripcion=models.CharField(max_length=1000)
